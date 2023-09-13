@@ -1,10 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'flight.dart';
 
 void main() => runApp(MyApp());
 var physicalScreenSize = window.physicalSize;
 var physicalWidth = physicalScreenSize.width;
 var physicalHeight = physicalScreenSize.height;
+
+final flightList = <NewFlight>[];
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
@@ -45,44 +48,68 @@ class HomePage extends StatelessWidget {
       ],
     );
 
-    Row flight(String pilotName, String aircraft, DateTime startTime,
+    Widget flight(String pilotName, String aircraft, DateTime startTime,
         [String passenger = ""]) {
       bool end = false;
 
-      return Row(
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            child: Text(
-              aircraft,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            Container(
+              child: Text(
+                aircraft,
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
               ),
             ),
-          ),
-          Container(
-            child: Text(
-              pilotName,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
+            Spacer(flex: 2),
+            Container(
+              child: Text(
+                pilotName,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
               ),
             ),
-          ),
-          Container(
-            child: Text(
-              passenger,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
+            Spacer(),
+            Container(
+              child: Text(
+                passenger,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
               ),
             ),
-          ),
+          ]),
+          Row(
+            children: [
+              Container(
+                  child: Text(
+                      startTime.hour.toString() +
+                          ":" +
+                          startTime.minute.toString(),
+                      style:
+                          TextStyle(fontSize: 20, color: Colors.blueAccent))),
+            ],
+          )
         ],
       );
+    }
+
+    Widget flights(List<NewFlight> flightList) {
+      return Column(
+          children: flightList
+              .map((item) => flight(item.pilotName, item.aircraft,
+                  item.startTime, item.passengerName))
+              .toList());
     }
 
     Widget flightBox = Column(
@@ -103,48 +130,63 @@ class HomePage extends StatelessWidget {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
+                        NewFlight currentFormData = NewFlight();
                         return AlertDialog(
                             scrollable: true,
                             title: const Text("Flight Information"),
                             surfaceTintColor: Colors.blueAccent,
                             content: SizedBox(
-                                height: 300,
-                                width: 300,
-                                child: Form(
-                                    child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    TextFormField(
-                                        decoration: const InputDecoration(
-                                            labelText: "Pilot In Command"),
-                                        validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter some text';
-                                          }
-                                        }),
-                                    TextFormField(
-                                        decoration: const InputDecoration(
-                                            labelText: "Passenger"))
-                                  ],
-                                ))),
+                              height: 300,
+                              width: 300,
+                              child: Form(
+                                  child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  TextFormField(
+                                    onChanged: (String pilotInCommand) => {
+                                      currentFormData.pilotName = pilotInCommand
+                                    },
+                                    decoration: const InputDecoration(
+                                        labelText: "Pilot In Command"),
+                                  ),
+                                  TextFormField(
+                                      onChanged: (String pax) =>
+                                          {currentFormData.passengerName = pax},
+                                      decoration: const InputDecoration(
+                                          labelText: "Passenger")),
+                                  TextFormField(
+                                      onChanged: (String aircraft) =>
+                                          {currentFormData.aircraft = aircraft},
+                                      decoration: const InputDecoration(
+                                          labelText: "Aircraft Registration")),
+                                ],
+                              )),
+                            ),
                             actions: [
                               ElevatedButton(
-                                  child: const Text("Submit"), onPressed: () {})
+                                  child: const Text("Submit"),
+                                  onPressed: () {
+                                    currentFormData.startTime = DateTime.now();
+                                    flightList.add(currentFormData);
+                                    Navigator.pop(context);
+                                    Navigator.popAndPushNamed(context, "/");
+                                  })
                             ]);
                       })
                 },
                 child: Icon(Icons.add),
-              ))
+              )),
+          Positioned(
+              left: physicalWidth / 2,
+              top: 0,
+              child: Container(
+                  width: physicalWidth / 2,
+                  padding: EdgeInsets.only(top: 50, left: 75, right: 100),
+                  child: flights(flightList)))
         ])
       ],
     );
-
-    @override
-    Widget build(BuildContext context) {
-      // TODO: implement build
-      throw UnimplementedError();
-    }
 
     return Scaffold(
         body: Column(
