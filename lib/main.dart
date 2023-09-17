@@ -52,56 +52,71 @@ class HomePage extends StatelessWidget {
         [String passenger = ""]) {
       bool end = false;
 
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            Container(
-              child: Text(
-                aircraft,
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
-                ),
-              ),
-            ),
-            Spacer(flex: 2),
-            Container(
-              child: Text(
-                pilotName,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            Spacer(),
-            Container(
-              child: Text(
-                passenger,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ]),
-          Row(
+      return Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                const Color.fromARGB(255, 63, 135, 194),
+                Color.fromARGB(255, 49, 169, 224)
+              ])),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                Container(
+                  margin: EdgeInsets.only(top: 10, left: 25),
                   child: Text(
-                      startTime.hour.toString() +
-                          ":" +
-                          startTime.minute.toString(),
-                      style:
-                          TextStyle(fontSize: 20, color: Colors.blueAccent))),
+                    aircraft,
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 235, 231, 46),
+                    ),
+                  ),
+                ),
+                Spacer(flex: 2),
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: Text(
+                    pilotName,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  margin: EdgeInsets.only(top: 10, right: 25),
+                  child: Text(
+                    passenger,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Spacer()
+              ]),
+              Row(
+                children: [
+                  Container(
+                      margin: EdgeInsets.only(bottom: 10, left: 25),
+                      child: Text(
+                          startTime.hour.toString() +
+                              ":" +
+                              startTime.minute.toString(),
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color.fromARGB(255, 236, 240, 31)))),
+                ],
+              )
             ],
-          )
-        ],
-      );
+          ));
     }
 
     Widget flights(List<NewFlight> flightList) {
@@ -118,13 +133,13 @@ class HomePage extends StatelessWidget {
           Align(
               alignment: Alignment.centerRight,
               child: Container(
-                height: physicalHeight - 46,
+                height: physicalHeight - 47,
                 width: physicalWidth / 2,
                 color: Colors.greenAccent,
               )),
           Positioned(
               top: 0,
-              right: physicalWidth / 2 - 55,
+              left: physicalWidth / 2,
               child: ElevatedButton(
                 onPressed: () => {
                   showDialog(
@@ -179,11 +194,9 @@ class HomePage extends StatelessWidget {
               )),
           Positioned(
               left: physicalWidth / 2,
-              top: 0,
-              child: Container(
-                  width: physicalWidth / 2,
-                  padding: EdgeInsets.only(top: 50, left: 75, right: 100),
-                  child: flights(flightList)))
+              width: physicalWidth / 2,
+              top: 28,
+              child: Container(child: flights(flightList)))
         ])
       ],
     );
